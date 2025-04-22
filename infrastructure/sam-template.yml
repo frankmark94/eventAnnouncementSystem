@@ -1,0 +1,175 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: 'Event Announcement System using AWS SAM'
+
+Parameters:
+  S3BucketName:
+    Type: String
+    Description: Name of the S3 bucket for static website hosting
+    Default: event-announcement-system
+
+  DynamoDBTableName:
+    Type: String
+    Description: Name of the DynamoDB table for storing events
+    Default: Events
+
+  SnsTopicName:
+    Type: String
+    Description: Name of the SNS topic for event notifications
+    Default: EventNotifications
+
+Globals:
+  Function:
+    Timeout: 10
+    Runtime: nodejs14.x
+    MemorySize: 128
+    Environment:
+      Variables:
+        EVENTS_TABLE: !Ref DynamoDBTableName
+        SNS_TOPIC_ARN: !Ref EventNotificationsTopic
+
+Resources:
+  # S3 Bucket for static website hosting
+  WebsiteBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Ref S3BucketName
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: index.html
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - '*'
+            AllowedMethods:
+              - GET
+            AllowedOrigins:
+              - '*'
+            MaxAge: 3000
+
+  # Bucket policy to allow public access
+  WebsiteBucketPolicy:
+    Type: 'AWS::S3::BucketPolicy'
+    Properties:
+      Bucket: !Ref WebsiteBucket
+      PolicyDocument:
+        Statement:
+          - Action:
+              - 's3:GetObject'
+            Effect: Allow
+            Resource: !Join ['', ['arn:aws:s3:::', !Ref WebsiteBucket, '/*']]
+            Principal: '*'
+
+  # DynamoDB table for events
+  EventsTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: !Ref DynamoDBTableName
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+
+  # SNS Topic for event notifications
+  EventNotificationsTopic:
+    Type: 'AWS::SNS::Topic'
+    Properties:
+      TopicName: !Ref SnsTopicName
+      DisplayName: 'Event Notifications'
+
+  # Lambda functions using SAM syntax
+  SubscribeUserFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      FunctionName: subscribeUser
+      Handler: subscribeUser.handler
+      CodeUri: ../backend/
+      Policies:
+        - SNSPublishMessagePolicy:
+            TopicName: !GetAtt EventNotificationsTopic.TopicName
+      Environment:
+        Variables:
+          SNS_TOPIC_ARN: !Ref EventNotificationsTopic
+      Events:
+        SubscribeAPI:
+          Type: Api
+          Properties:
+            Path: /subscribe
+            Method: post
+        SubscribeAPICors:
+          Type: Api
+          Properties:
+            Path: /subscribe
+            Method: options
+
+  CreateEventFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      FunctionName: createEvent
+      Handler: createEvent.handler
+      CodeUri: ../backend/
+      Policies:
+        - SNSPublishMessagePolicy:
+            TopicName: !GetAtt EventNotificationsTopic.TopicName
+        - DynamoDBCrudPolicy:
+            TableName: !Ref EventsTable
+      Environment:
+        Variables:
+          EVENTS_TABLE: !Ref DynamoDBTableName
+          SNS_TOPIC_ARN: !Ref EventNotificationsTopic
+      Events:
+        CreateEventAPI:
+          Type: Api
+          Properties:
+            Path: /event
+            Method: post
+        CreateEventAPICors:
+          Type: Api
+          Properties:
+            Path: /event
+            Method: options
+
+  GetEventsFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      FunctionName: getEvents
+      Handler: getEvents.handler
+      CodeUri: ../backend/
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref EventsTable
+      Environment:
+        Variables:
+          EVENTS_TABLE: !Ref DynamoDBTableName
+      Events:
+        GetEventsAPI:
+          Type: Api
+          Properties:
+            Path: /events
+            Method: get
+        GetEventsAPICors:
+          Type: Api
+          Properties:
+            Path: /events
+            Method: options
+
+Outputs:
+  WebsiteURL:
+    Description: URL for the website
+    Value: !GetAtt WebsiteBucket.WebsiteURL
+
+  ApiEndpoint:
+    Description: URL of the API Gateway endpoint
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod"
+
+  SNSTopicARN:
+    Description: ARN of the SNS topic
+    Value: !Ref EventNotificationsTopic
+
+  DynamoDBTableName:
+    Description: Name of the DynamoDB table
+    Value: !Ref EventsTable 

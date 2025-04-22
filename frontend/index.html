@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Announcement System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>Event Announcement System</h1>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="events.html">Events</a></li>
+          <li><a href="form.html">Create Event</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="card">
+        <h2>Welcome to the Event Announcement System</h2>
+        <p>Stay informed about upcoming events and never miss an important announcement!</p>
+        
+        <div class="cta-buttons">
+          <a href="events.html" class="btn">View Events</a>
+          <a href="form.html" class="btn">Create Event</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="features">
+      <h2>Features</h2>
+      <div class="card">
+        <h3>Subscribe to Event Notifications</h3>
+        <p>Get email notifications when new events are created. Never miss an important event again!</p>
+        
+        <form id="subscribe-form" class="subscribe-form">
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" required placeholder="your.email@example.com">
+          </div>
+          <button type="submit" class="btn">Subscribe</button>
+        </form>
+        
+        <div class="success-message"></div>
+        <div class="error-message"></div>
+      </div>
+      
+      <div class="card">
+        <h3>Create Events</h3>
+        <p>Easily create and share events with all subscribers.</p>
+        <a href="form.html" class="btn">Create an Event</a>
+      </div>
+      
+      <div class="card">
+        <h3>View All Events</h3>
+        <p>Browse through all upcoming events in one place.</p>
+        <a href="events.html" class="btn">View Events</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2023 Event Announcement System. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html> 

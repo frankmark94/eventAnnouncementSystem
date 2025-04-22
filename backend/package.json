@@ -1,0 +1,20 @@
+{
+  "name": "event-announcement-system-backend",
+  "version": "1.0.0",
+  "description": "Backend Lambda functions for the Event Announcement System",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "aws",
+    "lambda",
+    "serverless",
+    "events"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.1035.0"
+  }
+} 

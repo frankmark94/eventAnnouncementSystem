@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Events - Event Announcement System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>Event Announcement System</h1>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="events.html">Events</a></li>
+          <li><a href="form.html">Create Event</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="events-section">
+      <h2>Upcoming Events</h2>
+      <p>Browse through all of our upcoming events below.</p>
+      
+      <div id="events-container" class="events-grid">
+        <!-- Events will be loaded here dynamically -->
+        <p>Loading events...</p>
+      </div>
+      
+      <div class="cta-container">
+        <p>Want to create your own event?</p>
+        <a href="form.html" class="btn">Create Event</a>
+      </div>
+      
+      <div class="subscribe-container card">
+        <h3>Stay Updated</h3>
+        <p>Subscribe to receive notifications about new events!</p>
+        
+        <form id="subscribe-form" class="subscribe-form">
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" required placeholder="your.email@example.com">
+          </div>
+          <button type="submit" class="btn">Subscribe</button>
+        </form>
+        
+        <div class="success-message"></div>
+        <div class="error-message"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2023 Event Announcement System. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html> 
