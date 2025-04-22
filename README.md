@@ -5,6 +5,9 @@ A serverless application built with AWS services that allows users to:
 - View a list of events
 - Create new events
 
+![image](https://github.com/user-attachments/assets/966648e4-f522-47a1-b8ac-386ce6dba290)
+
+
 ## Architecture
 
 This project uses the following AWS services:
